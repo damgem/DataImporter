@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.geometry.Insets?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.damgem.dataImporter.ErrorController"
+            prefHeight="350.0" prefWidth="550.0">
+    <VBox AnchorPane.bottomAnchor="0"
+          AnchorPane.topAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+        <padding>
+            <Insets bottom="12" left="12" top="12" right="12"/>
+        </padding>
+        <VBox VBox.vgrow="ALWAYS"
+              alignment="CENTER">
+            <Label fx:id="errorTitle" style="-fx-font-size: 20;" textFill="orangered"/>
+            <TextFlow textAlignment="CENTER">
+                <Text fx:id="errorDescription"/>
+            </TextFlow>
+        </VBox>
+        <HBox alignment="BASELINE_CENTER">
+            <Button text="Okay" onAction="#close"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

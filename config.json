@@ -1,0 +1,47 @@
+{
+  "FB" : {
+    "target": "db.mdb",
+    "subTarget": "tbl_Feedback_FP",
+    "mapping": {
+      "ID1":  null,
+      "WorkshopID": null,
+      "Geschlecht": null,
+      "Alter": null,
+      "Freiwilligkeit": null,
+      "Gefallen": null,
+      "Stimmung": null,
+      "Arbeitstempo": null,
+      "Inhalte_ausprobieren": null,
+      "Inhalte_mehr_wissen": null,
+      "Inhalte_später_nutzen": null,
+      "Inhalte_spaß_gemacht": null,
+      "Inhalte_neues_gelernt_frei": null,
+      "Inhalte_nicht_gefallen_frei": null,
+      "Leitung_hat_gut_erklaert": null,
+      "Leitung_konnte_Fragen_beantworten": null,
+      "Leitung_um_Gruppe_gekümmert": null,
+      "Idee_was_besser_frei": null,
+      "Wunsch_Workshops_frei": null,
+      "Ausserdem_frei": null
+    }
+  },
+  "WS" : {
+    "target": "teilnehmer.xls",
+    "mapping": {
+      "Test123": null,
+      "Test234": 1,
+      "Alter": 2,
+      "Name": 3
+    }
+  },
+  "FE": {
+    "target": "ferienWorkshops.xls",
+    "mapping": {
+      "hihi": null,
+      "test": {
+        "sourceColumn": 2,
+        "isRequired": true
+      }
+    }
+  }
+}
