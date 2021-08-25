@@ -1,46 +1,86 @@
 {
-  "FB" : {
-    "target": "db.mdb",
-    "subTarget": "tbl_Feedback_FP",
-    "mapping": {
-      "ID1":  null,
-      "WorkshopID": null,
-      "Geschlecht": null,
-      "Alter": null,
-      "Freiwilligkeit": null,
-      "Gefallen": null,
-      "Stimmung": null,
-      "Arbeitstempo": null,
-      "Inhalte_ausprobieren": null,
-      "Inhalte_mehr_wissen": null,
-      "Inhalte_später_nutzen": null,
-      "Inhalte_spaß_gemacht": null,
-      "Inhalte_neues_gelernt_frei": null,
-      "Inhalte_nicht_gefallen_frei": null,
-      "Leitung_hat_gut_erklaert": null,
-      "Leitung_konnte_Fragen_beantworten": null,
-      "Leitung_um_Gruppe_gekümmert": null,
-      "Idee_was_besser_frei": null,
-      "Wunsch_Workshops_frei": null,
-      "Ausserdem_frei": null
-    }
-  },
-  "WS" : {
-    "target": "teilnehmer.xls",
-    "mapping": {
-      "Test123": null,
-      "Test234": 1,
-      "Alter": 2,
-      "Name": 3
-    }
-  },
-  "FE": {
-    "target": "ferienWorkshops.xls",
-    "mapping": {
-      "hihi": null,
-      "test": {
-        "sourceColumn": 2,
-        "isRequired": true
+  "legacyMode" : true,
+  "legacyProfile" : "FB",
+  "profiles" : {
+    "FP": {
+      "target": "teilnehmer.xls",
+      "targetType": "excel",
+      "mapping": {
+        "Kundennummer" :  null,
+        "Name" :  0,
+        "Vorname" :  1,
+        "Anrede" :  2,
+        "Geburtsdatum" :  3,
+        "Strasse" : 4,
+        "Hausnummer" : 5,
+        "PLZ" :  6,
+        "Ort" :  7,
+        "Telefon1" :  null,
+        "Telefon2" :  null,
+        "Fax" :  null,
+        "eMail" :  null,
+        "Mobil" :  8,
+        "UserName" :  null,
+        "Passwort" :  null,
+        "CH1" :  9,
+        "CH2" :  null,
+        "CH3" :  null,
+        "CH4" :  null,
+        "CH5" :  null,
+        "CH6" :  null,
+        "eMail-Privat" :  10,
+        "Versand zugestimmt" :  11,
+        "Aufmerksam über" :  12,
+        "Vorname Erziehungsb." :  13,
+        "Nachname Erziehungsb." :  14
+      }
+    },
+    "Feedback": {
+      "target": "feedback.mdb",
+      "subTarget": "tbl_Feedback_FP",
+      "targetType": "access",
+      "mapping": {
+        "ID1": {
+          "isRequired": true
+        },
+        "WorkshopID": 0,
+        "Geschlecht": null,
+        "Alter": 2,
+        "Freiwilligkeit": 3,
+        "Gefallen": 4,
+        "Stimmung": 5,
+        "Arbeitstempo": 6,
+        "Inhalte_ausprobieren": 7,
+        "Inhalte_mehr_wissen": 8,
+        "Inhalte_später_nutzen": 9,
+        "Inhalte_spaß_gemacht": 10,
+        "Inhalte_neues_gelernt_frei": 11,
+        "Inhalte_nicht_gefallen_frei": 12,
+        "Leitung_hat_gut_erklaert": 13,
+        "Leitung_konnte_Fragen_beantworten": 14,
+        "Leitung_um_Gruppe_gekümmert": 15,
+        "Idee_was_besser_frei": {
+          "sourceColumnIndex" : 16,
+          "isRequired" : true
+        },
+        "Wunsch_Workshops_frei": 17,
+        "Ausserdem_frei": 18
+      }
+    },
+    "GEB": {
+      "targetType": "excel",
+      "target": "geburtstage.xls",
+      "mapping": {
+        "Vorname": 0,
+        "Nachname": 1,
+        "Straße": 2,
+        "Hausnummer": 3,
+        "PLZ": 4,
+        "Ort": 5,
+        "E-Mail": 6,
+        "Mobilfunknummer": 7,
+        "Bemerkung": 8,
+        "Ich bin erstmals auf die Angebote der Stiftung aufmerksam geworden": 9
       }
     }
   }

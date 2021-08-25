@@ -1,6 +1,9 @@
 package com.damgem.dataImporter;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
@@ -13,8 +16,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -88,16 +96,19 @@ public class MainController implements Initializable {
             successful = false;
         }
 
-        PauseTransition pause = new PauseTransition(Duration.millis(250));
-        if(successful) {
+        if(!successful) {
+            PauseTransition pause = new PauseTransition(Duration.millis(250));
             pause.setOnFinished(event -> this.disabled.setValue(false));
+            pause.play();
         } else {
-            pause.setOnFinished(event -> {
-                this.disabled.setValue(false);
-                this.closeWindow();
-            });
+            ColorInput effect = new ColorInput(0, 0, 1000, 1000, Color.rgb(0,0,0, 0));
+            Timeline fade = new Timeline(
+                    new KeyFrame(Duration.millis(100), new KeyValue(effect.paintProperty(), Paint.valueOf("green")))
+            );
+            this.grid.getScene().getRoot().setEffect(effect);
+            fade.setOnFinished(e -> this.closeWindow());
+            fade.play();
         }
-        pause.play();
     }
 
     public void errorDialog(String errorTitle, String errorDescription) {

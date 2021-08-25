@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class Main extends Application {
 
-    public void errorScene(Stage primaryStage, String errorTitle, String errorDescription) {
+    public void showErrorWindow(Stage primaryStage, String errorTitle, String errorDescription) {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Error.fxml"));
         Parent root;
@@ -45,7 +45,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Map<String, String> params = this.getParameters().getNamed();
         if(!params.containsKey("values")) {
-            this.errorScene(primaryStage, "Ung\u00FCltiger Aufruf", "Der Kommandozeilenparameter --values fehlt.");
+            this.showErrorWindow(primaryStage, "Ung\u00FCltiger Aufruf", "Der Kommandozeilenparameter --values fehlt.");
+            return;
+        }
+
+        // Get Parameter
+        String paramString = params.get("values");
+        if(paramString.isEmpty()) {
+            this.showErrorWindow(primaryStage, "Leere Eingabe", "Eingabe ist leer.");
             return;
         }
 
@@ -57,36 +64,70 @@ public class Main extends Application {
                 .create();
 
         // Parse Json / Load Profiles
-        Type profilesType = new TypeToken<Map<String, ConnectorConfig>>() {}.getType();
         String jsonString;
         try { jsonString = Files.readString(Paths.get("config.json")); }
         catch (Exception error) {
-            this.errorScene(primaryStage, "Fehlende Konfiguration", "Die Datei config.json kann nicht gelesen oder gefunden werden.\n\n" + error.getLocalizedMessage());
+            this.showErrorWindow(primaryStage, "Fehlende Konfiguration", "Die Datei config.json" +
+                    "kann nicht gelesen oder gefunden werden.\n\n" + error.getMessage());
             return;
         }
-        Map<String, ConnectorConfig> profiles = gson.fromJson(jsonString, profilesType);
+        ConfigFile cfg = gson.fromJson(jsonString, ConfigFile.class);
 
         // Select Profile
-        ConnectorConfig profile = profiles.get("FB");
+        ConnectorConfig profile;
+        if(cfg.legacyMode) {
+            if(cfg.legacyProfile == null || cfg.legacyProfile.isEmpty()) {
+                this.showErrorWindow(primaryStage, "Fehler in Konfiguration", "\"legacyMode\" ist" +
+                        "aktiviert, aber \"legacyProfile\" ist nicht angegeben.");
+                return;
+            }
+            if(cfg.profiles.containsKey(cfg.legacyProfile)) {
+                this.showErrorWindow(primaryStage, "Fehler in Konfiguration", "\"legacyMode\" ist" +
+                        "aktiviert, aber \"legacyProfile\" ist kein gültiges Profil.");
+                return;
+            }
+            profile = cfg.profiles.get(cfg.legacyProfile);
+        }
+        else {
+            int indexOfSeperator = paramString.indexOf(';');
+            if(indexOfSeperator == -1) {
+                this.showErrorWindow(primaryStage, "Fehler in Eingabe", "Eingabe \"" + paramString
+                        + "\" enthält keine Profil Information und Legacy Mode ist nicht aktiviert.");
+                return;
+            }
+            String profileName = paramString.substring(0, indexOfSeperator);
+            paramString = paramString.substring(indexOfSeperator);
+
+            if(cfg.profiles.containsKey(profileName)) {
+                this.showErrorWindow(primaryStage, "Profil nicht gefunden", "\"legacyMode\" ist" +
+                        "deaktiviert, und die gibt ein nicht existierendes Profil \"" + profileName + "\" an.");
+                return;
+            }
+
+            profile = cfg.profiles.get(profileName);
+
+        }
 
         // Load Main Scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
         Parent scene;
         try{ scene = loader.load(); }
         catch (Exception error) {
-            this.errorScene(primaryStage, "Internal Error", "Cannot load Main.fxml: " + error.getLocalizedMessage());
+            this.showErrorWindow(primaryStage, "Internal Error", "Cannot load Main.fxml: " +
+                    error.getMessage());
             return;
         }
 
         // Init Main Controller
         MainController controller = loader.getController();
         try {
-            controller.setFields(new FieldMatcher(profile.mapping).match(params.get("values")));
+            controller.setFields(new FieldMatcher(profile.mapping).match());
         } catch (FieldMatcher.Error error) {
-            this.errorScene(primaryStage, error.errorTitle, error.errorDescription);
+            this.showErrorWindow(primaryStage, error.errorTitle, error.errorDescription);
             return;
         }
-        controller.setTarget(Objects.requireNonNullElse(profile.target, ""), Objects.requireNonNullElse(profile.subTarget, ""));
+        controller.setTarget(Objects.requireNonNullElse(profile.target, ""),
+                             Objects.requireNonNullElse(profile.subTarget, ""));
 
         // Prepare primary stage
         primaryStage.setTitle("DataImporter");
