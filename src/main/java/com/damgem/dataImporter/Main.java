@@ -67,7 +67,7 @@ public class Main extends Application {
         String jsonString;
         try { jsonString = Files.readString(Paths.get("config.json")); }
         catch (Exception error) {
-            this.showErrorWindow(primaryStage, "Fehlende Konfiguration", "Die Datei config.json" +
+            this.showErrorWindow(primaryStage, "Fehlende Konfiguration", "Die Datei config.json " +
                     "kann nicht gelesen oder gefunden werden.\n\n" + error.getMessage());
             return;
         }
@@ -77,13 +77,13 @@ public class Main extends Application {
         ConnectorConfig profile;
         if(cfg.legacyMode) {
             if(cfg.legacyProfile == null || cfg.legacyProfile.isEmpty()) {
-                this.showErrorWindow(primaryStage, "Fehler in Konfiguration", "\"legacyMode\" ist" +
-                        "aktiviert, aber \"legacyProfile\" ist nicht angegeben.");
+                this.showErrorWindow(primaryStage, "Fehler in Konfiguration", "\"legacyMode\" ist " +
+                        "aktiviert, aber es ist kein legacyProfile konfiguriert.");
                 return;
             }
-            if(cfg.profiles.containsKey(cfg.legacyProfile)) {
-                this.showErrorWindow(primaryStage, "Fehler in Konfiguration", "\"legacyMode\" ist" +
-                        "aktiviert, aber \"legacyProfile\" ist kein gültiges Profil.");
+            if(!cfg.profiles.containsKey(cfg.legacyProfile)) {
+                this.showErrorWindow(primaryStage, "Fehler in Konfiguration", "legacyMode ist " +
+                        "aktiviert, aber legacyProfile gibt kein g\u00FCltiges Profil an: \"" + cfg.legacyProfile + "\"");
                 return;
             }
             profile = cfg.profiles.get(cfg.legacyProfile);
@@ -92,20 +92,19 @@ public class Main extends Application {
             int indexOfSeperator = paramString.indexOf(';');
             if(indexOfSeperator == -1) {
                 this.showErrorWindow(primaryStage, "Fehler in Eingabe", "Eingabe \"" + paramString
-                        + "\" enthält keine Profil Information und Legacy Mode ist nicht aktiviert.");
+                        + "\" enth\u00E4lt keine Profil Information und Legacy Mode ist nicht aktiviert.");
                 return;
             }
             String profileName = paramString.substring(0, indexOfSeperator);
             paramString = paramString.substring(indexOfSeperator);
 
-            if(cfg.profiles.containsKey(profileName)) {
-                this.showErrorWindow(primaryStage, "Profil nicht gefunden", "\"legacyMode\" ist" +
-                        "deaktiviert, und die gibt ein nicht existierendes Profil \"" + profileName + "\" an.");
+            if(!cfg.profiles.containsKey(profileName)) {
+                this.showErrorWindow(primaryStage, "Profil nicht gefunden", "legacyMode ist " +
+                        "deaktiviert, und die Eingabe gibt ein nicht existierendes Profil \"" + profileName + "\" an.");
                 return;
             }
 
             profile = cfg.profiles.get(profileName);
-
         }
 
         // Load Main Scene
@@ -121,7 +120,7 @@ public class Main extends Application {
         // Init Main Controller
         MainController controller = loader.getController();
         try {
-            controller.setFields(new FieldMatcher(profile.mapping).match());
+            controller.setFields(new FieldMatcher(profile.mapping).match(paramString));
         } catch (FieldMatcher.Error error) {
             this.showErrorWindow(primaryStage, error.errorTitle, error.errorDescription);
             return;

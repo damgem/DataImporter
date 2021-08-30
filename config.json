@@ -1,38 +1,38 @@
 {
-  "legacyMode" : true,
-  "legacyProfile" : "FB",
-  "profiles" : {
-    "FP": {
+  "legacyMode": false,
+  "legacyProfile": "FB",
+  "profiles": {
+    "FB": {
       "target": "teilnehmer.xls",
       "targetType": "excel",
       "mapping": {
-        "Kundennummer" :  null,
-        "Name" :  0,
-        "Vorname" :  1,
-        "Anrede" :  2,
-        "Geburtsdatum" :  3,
-        "Strasse" : 4,
-        "Hausnummer" : 5,
-        "PLZ" :  6,
-        "Ort" :  7,
-        "Telefon1" :  null,
-        "Telefon2" :  null,
-        "Fax" :  null,
-        "eMail" :  null,
-        "Mobil" :  8,
-        "UserName" :  null,
-        "Passwort" :  null,
-        "CH1" :  9,
-        "CH2" :  null,
-        "CH3" :  null,
-        "CH4" :  null,
-        "CH5" :  null,
-        "CH6" :  null,
-        "eMail-Privat" :  10,
-        "Versand zugestimmt" :  11,
-        "Aufmerksam über" :  12,
-        "Vorname Erziehungsb." :  13,
-        "Nachname Erziehungsb." :  14
+        "Kundennummer":  null,
+        "Name":  0,
+        "Vorname":  1,
+        "Anrede":  2,
+        "Geburtsdatum":  3,
+        "Strasse": 4,
+        "Hausnummer": 5,
+        "PLZ":  6,
+        "Ort":  7,
+        "Telefon1":  null,
+        "Telefon2":  null,
+        "Fax":  null,
+        "eMail":  null,
+        "Mobil":  8,
+        "UserName":  null,
+        "Passwort":  null,
+        "CH1":  9,
+        "CH2":  null,
+        "CH3":  null,
+        "CH4":  null,
+        "CH5":  null,
+        "CH6":  null,
+        "eMail-Privat":  10,
+        "Versand zugestimmt":  11,
+        "Aufmerksam über":  12,
+        "Vorname Erziehungsb.":  13,
+        "Nachname Erziehungsb.":  14
       }
     },
     "Feedback": {
@@ -60,8 +60,8 @@
         "Leitung_konnte_Fragen_beantworten": 14,
         "Leitung_um_Gruppe_gekümmert": 15,
         "Idee_was_besser_frei": {
-          "sourceColumnIndex" : 16,
-          "isRequired" : true
+          "sourceColumnIndex": 16,
+          "isRequired": true
         },
         "Wunsch_Workshops_frei": 17,
         "Ausserdem_frei": 18

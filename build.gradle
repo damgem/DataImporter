@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'org.beryx.jlink' version '2.24.1'
     //id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.4'
 }
@@ -29,18 +29,24 @@ application {
 }
 
 javafx {
-    version = "11"
+    version = "15"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 
 }
 
 apply plugin: 'java'
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 15
+targetCompatibility = 15
 
 jlink {
     launcher{
         name = 'DataImporter'
         jvmArgs = ['-Djavafx.autoproxy.disable=true']
+    }
+    jpackage {
+        appVersion = '0.1.1'
+        icon = 'src/main/resources/table2.ico'
+        //jvmArgs = ['-Djavafx.autoproxy.disable=true']
+        installerOptions = ['--win-upgrade-uuid', 'comdamgemDataImporter']
     }
 }
