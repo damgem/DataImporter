@@ -1,6 +1,5 @@
 # Custom
-teilnehmer.xls
-db.mdb
+extern/data/*
 gradlew
 gradlew.bat
 

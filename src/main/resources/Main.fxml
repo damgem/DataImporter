@@ -14,7 +14,7 @@
             prefWidth="600.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.damgem.dataImporter.MainController">
+            fx:controller="com.damgem.DataImporter.Controller.MainController">
     <VBox AnchorPane.rightAnchor="0"
           AnchorPane.leftAnchor="0"
           AnchorPane.topAnchor="0"

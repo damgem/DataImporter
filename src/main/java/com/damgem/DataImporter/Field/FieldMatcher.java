@@ -1,8 +1,9 @@
-package com.damgem.dataImporter;
+package com.damgem.DataImporter.Field;
+
+import com.damgem.DataImporter.DataImporterError;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FieldMatcher {
 
@@ -12,7 +13,7 @@ public class FieldMatcher {
         this.blueprints = blueprints;
     }
 
-    public List<Field> match(String valuesConcatStr) throws FieldMatcher.Error{
+    public List<Field> match(String valuesConcatStr) throws DataImporterError {
         String[] values = valuesConcatStr.split(";");
 
         List<Field> fields = new ArrayList<>(blueprints.size());
@@ -20,15 +21,5 @@ public class FieldMatcher {
             fields.add(bp.fillFrom(values));
         }
         return fields;
-    }
-
-    public static class Error extends Exception {
-        String errorTitle, errorDescription;
-
-        public Error(String errorTitle, String errorDescription) {
-            super(errorTitle + ": " + errorDescription);
-            this.errorTitle = errorTitle;
-            this.errorDescription = errorDescription;
-        }
     }
 }

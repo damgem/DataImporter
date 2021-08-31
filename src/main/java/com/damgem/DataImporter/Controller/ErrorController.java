@@ -1,4 +1,4 @@
-package com.damgem.dataImporter;
+package com.damgem.DataImporter.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -6,8 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.util.Objects;
 
 public class ErrorController {
     @FXML

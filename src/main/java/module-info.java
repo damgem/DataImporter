@@ -6,6 +6,14 @@ module com.damgem.dataImporter {
     requires com.google.gson;
     requires javafx.fxml;
 
-    opens com.damgem.dataImporter to com.google.gson;
-    exports com.damgem.dataImporter;
+    opens com.damgem.DataImporter to com.google.gson;
+    exports com.damgem.DataImporter;
+    exports com.damgem.DataImporter.Connector;
+    opens com.damgem.DataImporter.Connector to com.google.gson;
+    exports com.damgem.DataImporter.Field;
+    opens com.damgem.DataImporter.Field to com.google.gson;
+    exports com.damgem.DataImporter.Data;
+    opens com.damgem.DataImporter.Data to com.google.gson;
+    exports com.damgem.DataImporter.Controller;
+    opens com.damgem.DataImporter.Controller to com.google.gson;
 }

@@ -1,4 +1,6 @@
-package com.damgem.dataImporter;
+package com.damgem.DataImporter.Field;
+
+import com.damgem.DataImporter.DataImporterError;
 
 import java.util.Objects;
 
@@ -26,16 +28,19 @@ public class FieldBlueprint {
         this(name, namelessBlueprint.sourceColumnIndex, namelessBlueprint.isRequired);
     }
 
-    public Field fill(String value) {
-        return new Field(value, this);
-    }
+    private Field fill(String value) { return new Field(value, this); }
 
-    public Field fillFrom(String[] values) throws FieldMatcher.Error {
+    public Field fillFrom(String[] values) throws DataImporterError {
         if(this.sourceColumnIndex == null) return this.fill("");
-        if(this.sourceColumnIndex >= values.length)
-            throw new FieldMatcher.Error("Eingabe Fehler", "Das Feld \"" + this.name + "\" soll aus dem " + this.sourceColumnIndex + ". Feld (Indizes starten bei 0) gelesen werden. Die Eingabe hat jedoch nur " + values.length + " Datenfelder!");
-        if(this.sourceColumnIndex < 0)
-            throw new FieldMatcher.Error("Konfigurations Fehler", "Das Feld \"" + this.name + "\" soll aus dem Feld mit negativem Index " + this.sourceColumnIndex + " gelesen werden! \u00DCberpr\u00FCfe die config.json.");
+        if(this.sourceColumnIndex >= values.length) {
+            throw new DataImporterError("Eingabe Fehler", "Das Feld \"" + this.name + "\" soll " +
+                    "aus dem " + this.sourceColumnIndex + ". Feld (Indizes starten bei 0) gelesen werden. Die " +
+                    "Eingabe hat jedoch nur " + values.length + " Datenfelder!");
+        }
+        if(this.sourceColumnIndex < 0) {
+            throw new DataImporterError("Konfigurations Fehler", "Das Feld \"" + this.name +
+                    "\" soll aus dem Feld mit negativem Index " + this.sourceColumnIndex + " gelesen werden!");
+        }
         return this.fill(values[this.sourceColumnIndex]);
     }
 

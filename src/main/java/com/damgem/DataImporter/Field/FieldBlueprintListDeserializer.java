@@ -1,4 +1,4 @@
-package com.damgem.dataImporter;
+package com.damgem.DataImporter.Field;
 
 import com.google.gson.*;
 

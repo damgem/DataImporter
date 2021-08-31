@@ -8,8 +8,8 @@
 <?import javafx.geometry.Insets?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.damgem.dataImporter.ErrorController"
-            prefHeight="350.0" prefWidth="550.0">
+            fx:controller="com.damgem.DataImporter.Controller.ErrorController"
+            prefHeight="150.0" prefWidth="450.0">
     <VBox AnchorPane.bottomAnchor="0"
           AnchorPane.topAnchor="0"
           AnchorPane.leftAnchor="0"

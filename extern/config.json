@@ -1,9 +1,9 @@
 {
   "legacyMode": false,
-  "legacyProfile": "FB",
+  "legacyProfile": "WS",
   "profiles": {
-    "FB": {
-      "target": "teilnehmer.xls",
+    "WS": {
+      "target": "data/teilnehmer.xls",
       "targetType": "excel",
       "mapping": {
         "Kundennummer":  null,
@@ -35,8 +35,8 @@
         "Nachname Erziehungsb.":  14
       }
     },
-    "Feedback": {
-      "target": "feedback.mdb",
+    "FB": {
+      "target": "data/feedback.mdb",
       "subTarget": "tbl_Feedback_FP",
       "targetType": "access",
       "mapping": {
@@ -69,7 +69,7 @@
     },
     "GEB": {
       "targetType": "excel",
-      "target": "geburtstage.xls",
+      "target": "data/geburtstage.xls",
       "mapping": {
         "Vorname": 0,
         "Nachname": 1,

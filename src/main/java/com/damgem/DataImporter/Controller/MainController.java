@@ -1,5 +1,10 @@
-package com.damgem.dataImporter;
+package com.damgem.DataImporter.Controller;
 
+import com.damgem.DataImporter.Connector.AccessConnector;
+import com.damgem.DataImporter.Connector.DataConnector;
+import com.damgem.DataImporter.Connector.ExcelConnector;
+import com.damgem.DataImporter.DataImporterError;
+import com.damgem.DataImporter.Field.Field;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -19,10 +24,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -30,7 +33,6 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainController implements Initializable {
     // FXML Stuff
@@ -43,7 +45,7 @@ public class MainController implements Initializable {
     private List<Field> fields;
     private final Property<Boolean> disabled = new SimpleBooleanProperty(false);
 
-    DataConnector dataConnector = new AccessConnector();
+    DataConnector dataConnector;
 
     String target;
     String subTarget;
@@ -63,7 +65,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void setTarget(String target, String subTarget) {
+    public void setTarget(String target, String subTarget) throws DataImporterError {
         target = Objects.requireNonNullElse(target, "");
         this.targetLabel.setText("Target: " + target);
         this.target = target;
@@ -72,6 +74,15 @@ public class MainController implements Initializable {
         String subTargetPrefix = subTarget.isEmpty() ? "" : "Sub-Target: ";
         this.subTargetLabel.setText(subTargetPrefix + subTarget);
         this.subTarget = subTarget;
+
+        if(target.endsWith(".mdb")) {
+            this.dataConnector = new AccessConnector(target, subTarget);
+        } else if(target.endsWith(".xls")) {
+            this.dataConnector = new ExcelConnector(target, subTarget);
+        } else {
+            throw new DataImporterError("Fehlerhafte Konfiguration", "Format des Targets "
+                    + target + " nicht erkannt.");
+        }
     }
 
     @Override
@@ -88,12 +99,14 @@ public class MainController implements Initializable {
     public void importData() {
         this.disabled.setValue(true);
 
-        boolean successful = true;
+        boolean successful = false;
         try {
             dataConnector.write(this.target, this.subTarget, this.fields);
-        } catch (DataConnectorError error) {
+            successful = true;
+        } catch (DataImporterError error) {
             this.errorDialog(error.errorTitle, error.errorDescription);
-            successful = false;
+        } catch (Throwable error) {
+            this.errorDialog("Internal Error", error.getMessage());
         }
 
         if(!successful) {
