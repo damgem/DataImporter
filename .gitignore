@@ -1,7 +1,9 @@
 # Custom
-extern/data/*
+extern/data
+data
 gradlew
 gradlew.bat
+config.json
 
 # From https://github.com/github/gitignore/blob/master/Gradle.gitignore
 .gradle

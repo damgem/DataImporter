@@ -3,8 +3,8 @@ package com.damgem.DataImporter.Controller;
 import com.damgem.DataImporter.Connector.AccessConnector;
 import com.damgem.DataImporter.Connector.DataConnector;
 import com.damgem.DataImporter.Connector.ExcelConnector;
-import com.damgem.DataImporter.DataImporterError;
-import com.damgem.DataImporter.Field.Field;
+import com.damgem.DataImporter.TitledError;
+import com.damgem.DataImporter.UIField;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -42,7 +42,7 @@ public class MainController implements Initializable {
     public Label targetLabel;
     public Label subTargetLabel;
 
-    private List<Field> fields;
+    private List<UIField> fields;
     private final Property<Boolean> disabled = new SimpleBooleanProperty(false);
 
     DataConnector dataConnector;
@@ -50,11 +50,11 @@ public class MainController implements Initializable {
     String target;
     String subTarget;
 
-    public void setFields(List<Field> fields) {
+    public void setFields(List<UIField> fields) {
         this.fields = fields;
         boolean customSelection = false;
         for (int fi = 0; fi < fields.size(); fi++) {
-            Field f = fields.get(fi);
+            UIField f = fields.get(fi);
             this.grid.add(new FieldName(f), 0, fi);
             FieldValue fv = new FieldValue(f, fi);
             this.grid.add(fv, 1, fi);
@@ -65,7 +65,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void setTarget(String target, String subTarget) throws DataImporterError {
+    public void setTarget(String target, String subTarget) throws TitledError {
         target = Objects.requireNonNullElse(target, "");
         this.targetLabel.setText("Target: " + target);
         this.target = target;
@@ -80,7 +80,7 @@ public class MainController implements Initializable {
         } else if(target.endsWith(".xls")) {
             this.dataConnector = new ExcelConnector(target, subTarget);
         } else {
-            throw new DataImporterError("Fehlerhafte Konfiguration", "Format des Targets "
+            throw new TitledError("Fehlerhafte Konfiguration", "Format des Targets "
                     + target + " nicht erkannt.");
         }
     }
@@ -103,8 +103,8 @@ public class MainController implements Initializable {
         try {
             dataConnector.write(this.target, this.subTarget, this.fields);
             successful = true;
-        } catch (DataImporterError error) {
-            this.errorDialog(error.errorTitle, error.errorDescription);
+        } catch (TitledError error) {
+            this.errorDialog(error.title, error.description);
         } catch (Throwable error) {
             this.errorDialog("Internal Error", error.getMessage());
         }
@@ -149,7 +149,7 @@ public class MainController implements Initializable {
     }
 
     private class FieldName extends Label {
-        FieldName(Field field) {
+        FieldName(UIField field) {
             super(field.name);
             if(field.isRequired) this.setStyle("-fx-font-weight: bold");
             this.disableProperty().bind(disabled);
@@ -158,7 +158,7 @@ public class MainController implements Initializable {
     }
 
    private class FieldValue extends TextField {
-        FieldValue(Field field, int row){
+        FieldValue(UIField field, int row){
             super(field.value.getValue());
             this.textProperty().bindBidirectional(fields.get(row).value);
             this.styleProperty().bind(Bindings.createStringBinding(

@@ -1,21 +1,25 @@
 package com.damgem.DataImporter.Controller;
 
+import com.damgem.DataImporter.TitledError;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class ErrorController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ErrorController implements Initializable {
     @FXML
     public Label errorTitle;
     public Text errorDescription;
 
-    public void setErrorMessage(String title, String description) {
-        this.errorTitle.setText(title);
-        this.errorDescription.setText(description);
-        System.out.println("[" + title + "]" + description);
+    public void setError(TitledError error) {
+        this.errorTitle.setText(error.title);
+        this.errorDescription.setText(error.description);
     }
 
     public void close(ActionEvent actionEvent) {
@@ -24,4 +28,8 @@ public class ErrorController {
         stage.close();
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
 }

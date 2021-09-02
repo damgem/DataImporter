@@ -1,7 +1,7 @@
 package com.damgem.DataImporter;
 
-public class DataImporterError extends Exception {
-    public String errorTitle, errorDescription;
+public class TitledError extends Exception {
+    public String title, description;
 
     private static String cleanString(String input) {
         // Although IntelliJ marks this code as unnecessary JavaFX will not display these symbols correctly without
@@ -16,9 +16,10 @@ public class DataImporterError extends Exception {
                .replace("ß", "\u00DF");
     }
 
-    public DataImporterError(String errorTitle, String errorDescription) {
-        super(errorTitle + ": " + errorDescription);
-        this.errorTitle = cleanString(errorTitle);
-        this.errorDescription = cleanString(errorDescription);
+    public TitledError() {}
+    public TitledError(String title, String description) {
+        super(title + ": " + description);
+        this.title = cleanString(title);
+        this.description = cleanString(description);
     }
 }

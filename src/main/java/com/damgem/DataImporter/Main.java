@@ -2,10 +2,8 @@ package com.damgem.DataImporter;
 
 import com.damgem.DataImporter.Controller.ErrorController;
 import com.damgem.DataImporter.Controller.MainController;
-import com.damgem.DataImporter.Data.ConfigurationData;
 import com.damgem.DataImporter.Data.ParameterData;
 import com.damgem.DataImporter.Data.Profile;
-import com.damgem.DataImporter.Field.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -47,7 +45,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private ConfigurationData getConfiguration(Path path) throws DataImporterError {
+    private Configuration getConfiguration(Path path) throws TitledError {
         // Create gson parser
         Type FieldBlueprintList = new TypeToken<List<FieldBlueprint>>() {}.getType();
         Gson gson = new GsonBuilder()
@@ -59,40 +57,42 @@ public class Main extends Application {
         String jsonString;
         try { jsonString = Files.readString(path); }
         catch (Exception error) {
-            throw new DataImporterError("Fehlende Datei", "Die Datei " + path.toAbsolutePath() +
+            throw new TitledError("Fehlende Datei", "Die Datei " + path.toAbsolutePath() +
                     " kann nicht gelesen oder gefunden werden.");
         }
-        return gson.fromJson(jsonString, ConfigurationData.class);
+        return gson.fromJson(jsonString, Configuration.class);
     }
 
-    private ParameterData getParameter() throws DataImporterError {
+    private ParameterData getParameter() throws TitledError {
         return new ParameterData(this.getParameters().getNamed());
     }
 
     @Override
     public void start(Stage primaryStage) {
         try { start_unsafe(primaryStage); }
-        catch (DataImporterError error) { this.showErrorWindow(primaryStage, error.errorTitle, error.errorDescription); }
+        catch (TitledError error) { this.showErrorWindow(primaryStage, error.title, error.description); }
         catch (RuntimeException error) {
            this.showErrorWindow(primaryStage, "Interner Fehler", error.getMessage());
         }
     }
 
-    private void start_unsafe(Stage primaryStage) throws DataImporterError {
+    private void start_unsafe(Stage primaryStage) throws TitledError {
 
         // Read parameter and configuration data
         ParameterData parameterData = this.getParameter();
-        ConfigurationData configurationData = this.getConfiguration(Paths.get("config.json"));
+        Configuration configurationData = this.getConfiguration(Paths.get("config.json"));
 
         // Retrieve profile data
+        System.out.println(parameterData.values);
         Profile profile = Profile.fromConfigurationData(configurationData, parameterData);
+        System.out.println(parameterData.values);
 
         // Load Main Scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
         Parent scene;
         try{ scene = loader.load(); }
         catch (Exception error) {
-            throw new DataImporterError("Internal Error", "Cannot load Main.fxml: " + error.getMessage());
+            throw new TitledError("Internal Error", "Cannot load Main.fxml: " + error.getMessage());
         }
 
         // Init Main Controller

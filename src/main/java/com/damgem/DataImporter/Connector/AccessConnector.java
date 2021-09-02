@@ -1,7 +1,7 @@
 package com.damgem.DataImporter.Connector;
 
-import com.damgem.DataImporter.DataImporterError;
-import com.damgem.DataImporter.Field.Field;
+import com.damgem.DataImporter.TitledError;
+import com.damgem.DataImporter.UIField;
 import com.healthmarketscience.jackcess.*;
 
 import java.io.File;
@@ -14,43 +14,43 @@ public class AccessConnector implements DataConnector {
 
     private String target, subTarget;
 
-    public AccessConnector(String target, String subTarget) throws DataImporterError {
+    public AccessConnector(String target, String subTarget) throws TitledError {
         if(target == null) {
-            throw new DataImporterError("Unvollständige Konfiguration", "target ist null.");
+            throw new TitledError("Unvollständige Konfiguration", "target ist null.");
         }
         if(subTarget == null) {
-            throw new DataImporterError("Unvollständige Konfiguration", "subTarget ist null.");
+            throw new TitledError("Unvollständige Konfiguration", "subTarget ist null.");
         }
         this.target = target;
         this.subTarget = subTarget;
     }
 
-    private Database openDatabase() throws DataImporterError {
+    private Database openDatabase() throws TitledError {
         File file = new File(target);
         if(!file.exists()) {
-            throw new DataImporterError("Fehler beim Öffnen der Datenbank", "Datei "
+            throw new TitledError("Fehler beim Öffnen der Datenbank", "Datei "
                     + file.getAbsolutePath() + " existiert nicht.");
         }
         try {
             return DatabaseBuilder.open(file);
         } catch (Exception error) {
-            throw new DataImporterError("Fehler beim Öffnen der Datenbank", "Datei "
+            throw new TitledError("Fehler beim Öffnen der Datenbank", "Datei "
                     + file.getAbsolutePath() + " konnte nicht korrekt gelesen werden. ");
         }
     }
 
-    private Table openTable() throws DataImporterError {
+    private Table openTable() throws TitledError {
         Database database = this.openDatabase();
         try {
             return database.getTable(subTarget);
         } catch (Exception error) {
-            throw new DataImporterError("Fehler beim Öffnen der Tabelle ", "Tabelle mit dem Namen " +
+            throw new TitledError("Fehler beim Öffnen der Tabelle ", "Tabelle mit dem Namen " +
                     subTarget + " konnte nicht gefunden oder nicht korrekt gelesen werden:\n" + error.getMessage());
         }
     }
 
     @Override
-    public void write(String target, String subTarget, List<Field> data) throws DataImporterError {
+    public void write(String target, String subTarget, List<UIField> data) throws TitledError {
 
         Table table = this.openTable();
 
@@ -58,7 +58,7 @@ public class AccessConnector implements DataConnector {
         List<String> dataColumnNames = data.stream().map(f -> f.name).collect(Collectors.toList());
 
         if(!accessColumnNames.equals(dataColumnNames)) {
-            throw new DataImporterError("Namensfehler", "Spaltennamen der Datenbank-Tabelle " +
+            throw new TitledError("Namensfehler", "Spaltennamen der Datenbank-Tabelle " +
                     "stimmen nicht mit den in der Konfiguration spezifierten Feldnamen überein.");
         }
 
@@ -75,7 +75,7 @@ public class AccessConnector implements DataConnector {
 
         try { table.addRowFromMap(map); }
         catch (Exception error) {
-            throw new DataImporterError("Schreibfehler", error.getMessage());
+            throw new TitledError("Schreibfehler", error.getMessage());
         }
     }
 }
