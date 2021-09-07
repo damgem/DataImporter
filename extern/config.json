@@ -4,7 +4,6 @@
   "profiles": {
     "WS": {
       "target": "data/teilnehmer.xls",
-      "targetType": "excel",
       "mapping": {
         "Kundennummer":  null,
         "Name":  1,
@@ -38,7 +37,6 @@
     "FB": {
       "target": "data/feedback.mdb",
       "subTarget": "tbl_Feedback_FP",
-      "targetType": "access",
       "mapping": {
         "ID1": null,
         "WorkshopID": {
