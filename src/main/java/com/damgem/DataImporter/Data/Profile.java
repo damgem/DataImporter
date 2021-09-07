@@ -36,7 +36,7 @@ public class Profile {
                         "Information und Legacy Mode ist nicht aktiviert.");
             }
             String profileName = parameterData.values.substring(0, indexOfSeparator);
-            parameterData.values = parameterData.values.substring(indexOfSeparator);
+            parameterData.values = parameterData.values.substring(indexOfSeparator + 1);
 
             if(!configurationData.profiles.containsKey(profileName)) {
                 throw new DataImporterError("Profil nicht gefunden", "legacyMode ist " +

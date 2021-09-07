@@ -32,16 +32,17 @@ public class FieldBlueprint {
 
     public Field fillFrom(String[] values) throws DataImporterError {
         if(this.sourceColumnIndex == null) return this.fill("");
-        if(this.sourceColumnIndex >= values.length) {
+        if(this.sourceColumnIndex > values.length) {
             throw new DataImporterError("Eingabe Fehler", "Das Feld \"" + this.name + "\" soll " +
-                    "aus dem " + this.sourceColumnIndex + ". Feld (Indizes starten bei 0) gelesen werden. Die " +
+                    "aus dem " + this.sourceColumnIndex + ". Feld gelesen werden. Die " +
                     "Eingabe hat jedoch nur " + values.length + " Datenfelder!");
         }
-        if(this.sourceColumnIndex < 0) {
+        if(this.sourceColumnIndex <= 0) {
             throw new DataImporterError("Konfigurations Fehler", "Das Feld \"" + this.name +
-                    "\" soll aus dem Feld mit negativem Index " + this.sourceColumnIndex + " gelesen werden!");
+                    "\" soll aus dem Feld mit negativem Index gelesen werden: " + this.sourceColumnIndex);
         }
-        return this.fill(values[this.sourceColumnIndex]);
+        // subtract 1 to index as source column index is an 1-based index
+        return this.fill(values[this.sourceColumnIndex - 1]);
     }
 
     @Override
