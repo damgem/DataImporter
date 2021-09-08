@@ -1,5 +1,6 @@
 package com.damgem.DataImporter.Controller;
 
+import com.damgem.DataImporter.Config;
 import com.damgem.DataImporter.Connector.AccessConnector;
 import com.damgem.DataImporter.Connector.DataConnector;
 import com.damgem.DataImporter.Connector.ExcelConnector;
@@ -65,23 +66,28 @@ public class MainController implements Initializable {
         }
     }
 
-    public void setTarget(String target, String subTarget) throws TitledError {
-        target = Objects.requireNonNullElse(target, "");
-        this.targetLabel.setText("Target: " + target);
-        this.target = target;
+    public void initTargets() throws TitledError {
+        // set target label
+        target = Config.getProfile().target;
+        targetLabel.setText("Target: " + target);
 
-        subTarget = Objects.requireNonNullElse(subTarget, "");
-        String subTargetPrefix = subTarget.isEmpty() ? "" : "Sub-Target: ";
-        this.subTargetLabel.setText(subTargetPrefix + subTarget);
-        this.subTarget = subTarget;
+        // set sub-target label (leave empty if null)
+        subTarget = Config.getProfile().subTarget;
+        subTargetLabel.setText(subTarget == null ? "" : "Sub-Target: " + subTarget);
 
-        if(target.endsWith(".mdb")) {
-            this.dataConnector = new AccessConnector(target, subTarget);
-        } else if(target.endsWith(".xls")) {
-            this.dataConnector = new ExcelConnector(target, subTarget);
-        } else {
-            throw new TitledError("Fehlerhafte Konfiguration", "Format des Targets "
-                    + target + " nicht erkannt.");
+        // determine and initialize connector type
+        if(target.endsWith(".mdb"))
+        {
+            dataConnector = new AccessConnector(target, subTarget);
+        }
+        else if(target.endsWith(".xls"))
+        {
+            dataConnector = new ExcelConnector(target, subTarget);
+        }
+        else
+        {
+            throw new TitledError("Fehlerhafte Konfiguration", "Format des Targets " + target +
+                    " nicht erkannt.");
         }
     }
 
@@ -90,7 +96,7 @@ public class MainController implements Initializable {
         this.buttonCancel.disableProperty().bind(this.disabled);
         this.buttonConfirm.disableProperty().bind(this.disabled);
         this.subTargetLabel.visibleProperty().bind(this.subTargetLabel.textProperty().isEmpty().not());
-    }
+   }
 
     public void closeWindow() {
         Platform.exit();

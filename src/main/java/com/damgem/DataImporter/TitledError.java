@@ -17,9 +17,9 @@ public class TitledError extends Exception {
     }
 
     public TitledError() {}
-    public TitledError(String title, String description) {
-        super(title + ": " + description);
+    public TitledError(String title, String msg) {
+        super(title + ": " + msg);
         this.title = cleanString(title);
-        this.description = cleanString(description);
+        this.description = cleanString(msg);
     }
 }

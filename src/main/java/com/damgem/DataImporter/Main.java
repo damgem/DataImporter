@@ -2,11 +2,6 @@ package com.damgem.DataImporter;
 
 import com.damgem.DataImporter.Controller.ErrorController;
 import com.damgem.DataImporter.Controller.MainController;
-import com.damgem.DataImporter.Data.ParameterData;
-import com.damgem.DataImporter.Data.Profile;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,98 +10,99 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
 public class Main extends Application {
 
-    public void showErrorWindow(Stage primaryStage, String errorTitle, String errorDescription) {
+    Stage primaryStage;
+
+    public void showErrorWindow(TitledError error) {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Error.fxml"));
         Parent root;
-
         try{ root = loader.load(); }
-        catch (IOException error) { throw new RuntimeException(error.getMessage()); }
+        catch (IOException e) { throw new RuntimeException(e.getMessage()); }
 
         // Init controller
-        ErrorController controller = loader.getController();
-        controller.setErrorMessage(errorTitle, errorDescription);
+        ((ErrorController) loader.getController()).setError(error);
 
         // Prepare primary stage
-        primaryStage.setTitle("Data Importer Error");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.getIcons().add(new Image("table2.png"));
+        this.primaryStage.setTitle("Data Importer Error");
+        this.primaryStage.setScene(new Scene(root));
+        this.primaryStage.getIcons().add(new Image("table2.png"));
 
         // Show primary stage
-        primaryStage.show();
-    }
-
-    private Configuration getConfiguration(Path path) throws TitledError {
-        // Create gson parser
-        Type FieldBlueprintList = new TypeToken<List<FieldBlueprint>>() {}.getType();
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(FieldBlueprint.class, new FieldBlueprintDeserializer())
-                .registerTypeAdapter(FieldBlueprintList, new FieldBlueprintListDeserializer())
-                .create();
-
-        // Parse Json / Load Profiles
-        String jsonString;
-        try { jsonString = Files.readString(path); }
-        catch (Exception error) {
-            throw new TitledError("Fehlende Datei", "Die Datei " + path.toAbsolutePath() +
-                    " kann nicht gelesen oder gefunden werden.");
-        }
-        return gson.fromJson(jsonString, Configuration.class);
-    }
-
-    private ParameterData getParameter() throws TitledError {
-        return new ParameterData(this.getParameters().getNamed());
+        this.primaryStage.show();
     }
 
     @Override
     public void start(Stage primaryStage) {
-        try { start_unsafe(primaryStage); }
-        catch (TitledError error) { this.showErrorWindow(primaryStage, error.title, error.description); }
-        catch (RuntimeException error) {
-           this.showErrorWindow(primaryStage, "Interner Fehler", error.getMessage());
+        this.primaryStage = primaryStage;
+        try
+        {
+            start_unsafe();
+        }
+        catch (TitledError error)
+        {
+            this.showErrorWindow(error);
+        }
+        catch (RuntimeException error)
+        {
+            this.showErrorWindow(new TitledError("Internal Error", error.getMessage()));
         }
     }
 
-    private void start_unsafe(Stage primaryStage) throws TitledError {
+    String getValuesParameter() throws TitledError {
+        String values = getParameters().getNamed().get("values");
+        if(values != null) return values;
+        throw new TitledError();
+    }
 
-        // Read parameter and configuration data
-        ParameterData parameterData = this.getParameter();
-        Configuration configurationData = this.getConfiguration(Paths.get("config.json"));
-
-        // Retrieve profile data
-        System.out.println(parameterData.values);
-        Profile profile = Profile.fromConfigurationData(configurationData, parameterData);
-        System.out.println(parameterData.values);
-
-        // Load Main Scene
+    private Scene initMainScene(List<UIField> fields) throws TitledError {
+        // load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
-        Parent scene;
-        try{ scene = loader.load(); }
-        catch (Exception error) {
+        Parent parent;
+        try
+        {
+            parent = loader.load();
+        }
+        catch (Exception error)
+        {
             throw new TitledError("Internal Error", "Cannot load Main.fxml: " + error.getMessage());
         }
 
-        // Init Main Controller
+        // pass data to controller
         MainController controller = loader.getController();
-        controller.setFields(new FieldMatcher(profile.mapping).match(parameterData.values));
-        controller.setTarget(Objects.requireNonNullElse(profile.target, ""),
-                             Objects.requireNonNullElse(profile.subTarget, ""));
+        controller.setFields(fields);
+        controller.initTargets();
 
-        // Prepare primary stage
+        return new Scene(parent);
+    }
+
+
+    private void start_unsafe() throws TitledError {
+        // load config first
+        Config.load(Paths.get("config.json"));
+
+        // get values parameter
+        String values = getValuesParameter();
+
+        // init the profile with the first field of values
+        // if initialization fails, legacy mode is in use
+        int splitIndex = values.indexOf(';');
+        if( Config.initProfile(values.substring(0,splitIndex)) ) {
+            values = values.substring(splitIndex + 1);
+        }
+
+        // map values according to profile
+
+        // show main scene
+        Scene mainScene = initMainScene();
+        primaryStage.setScene(mainScene);
         primaryStage.setTitle("DataImporter");
-        primaryStage.setScene(new Scene(scene));
         primaryStage.getIcons().add(new Image("table2.png"));
-
-        // Show primary stage
         primaryStage.show();
     }
 

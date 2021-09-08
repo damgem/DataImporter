@@ -10,7 +10,7 @@ module com.damgem.dataImporter {
     exports com.damgem.DataImporter;
     exports com.damgem.DataImporter.Connector;
     opens com.damgem.DataImporter.Connector to com.google.gson;
-    exports com.damgem.DataImporter.Field;
+    exports com.damgem.DataImporter.DataClasses;
     opens com.damgem.DataImporter.Field to com.google.gson;
     exports com.damgem.DataImporter.Data;
     opens com.damgem.DataImporter.Data to com.google.gson;
