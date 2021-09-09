@@ -1,7 +1,7 @@
 package com.damgem.DataImporter.Connector;
 
 import com.damgem.DataImporter.TitledError;
-import com.damgem.DataImporter.UIField;
+import com.damgem.DataImporter.UIStringField;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
@@ -75,7 +75,7 @@ public class ExcelConnector implements DataConnector {
     }
 
     @Override
-    public void write(String target, String subTarget, List<UIField> data) throws TitledError {
+    public void write(String target, String subTarget, List<UIStringField> data) throws TitledError {
 
         Workbook workbook = this.openWorkbook();
         Sheet sheet = this.openSheet(workbook);

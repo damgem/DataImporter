@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 
 public class Main extends Application {
 
@@ -60,7 +59,7 @@ public class Main extends Application {
         throw new TitledError();
     }
 
-    private Scene initMainScene(List<UIField> fields) throws TitledError {
+    private Scene initMainScene(List<UIStringField> fields) throws TitledError {
         // load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
         Parent parent;

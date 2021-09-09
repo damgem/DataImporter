@@ -5,7 +5,7 @@ import com.damgem.DataImporter.Connector.AccessConnector;
 import com.damgem.DataImporter.Connector.DataConnector;
 import com.damgem.DataImporter.Connector.ExcelConnector;
 import com.damgem.DataImporter.TitledError;
-import com.damgem.DataImporter.UIField;
+import com.damgem.DataImporter.UIStringField;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -43,7 +43,7 @@ public class MainController implements Initializable {
     public Label targetLabel;
     public Label subTargetLabel;
 
-    private List<UIField> fields;
+    private List<UIStringField> fields;
     private final Property<Boolean> disabled = new SimpleBooleanProperty(false);
 
     DataConnector dataConnector;
@@ -51,11 +51,11 @@ public class MainController implements Initializable {
     String target;
     String subTarget;
 
-    public void setFields(List<UIField> fields) {
+    public void setFields(List<UIStringField> fields) {
         this.fields = fields;
         boolean customSelection = false;
         for (int fi = 0; fi < fields.size(); fi++) {
-            UIField f = fields.get(fi);
+            UIStringField f = fields.get(fi);
             this.grid.add(new FieldName(f), 0, fi);
             FieldValue fv = new FieldValue(f, fi);
             this.grid.add(fv, 1, fi);
@@ -153,25 +153,4 @@ public class MainController implements Initializable {
         // Show stage
         stage.showAndWait();
     }
-
-    private class FieldName extends Label {
-        FieldName(UIField field) {
-            super(field.name);
-            if(field.isRequired) this.setStyle("-fx-font-weight: bold");
-            this.disableProperty().bind(disabled);
-            this.setTooltip(new Tooltip(field.name));
-        }
-    }
-
-   private class FieldValue extends TextField {
-        FieldValue(UIField field, int row){
-            super(field.value.getValue());
-            this.textProperty().bindBidirectional(fields.get(row).value);
-            this.styleProperty().bind(Bindings.createStringBinding(
-                    () -> field.isValid.getValue() ? "" : "-fx-background-color: #fa8072,linear-gradient(to bottom, derive(#fa8072,60%) 5%,derive(#fa8072,90%) 40%);",
-                    field.isValid
-            ));
-            this.disableProperty().bind(disabled);
-        }
-   }
 }

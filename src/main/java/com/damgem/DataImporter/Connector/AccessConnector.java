@@ -1,7 +1,7 @@
 package com.damgem.DataImporter.Connector;
 
 import com.damgem.DataImporter.TitledError;
-import com.damgem.DataImporter.UIField;
+import com.damgem.DataImporter.UIStringField;
 import com.healthmarketscience.jackcess.*;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class AccessConnector implements DataConnector {
     }
 
     @Override
-    public void write(String target, String subTarget, List<UIField> data) throws TitledError {
+    public void write(String target, String subTarget, List<UIStringField> data) throws TitledError {
 
         Table table = this.openTable();
 

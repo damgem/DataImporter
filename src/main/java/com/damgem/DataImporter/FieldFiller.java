@@ -12,9 +12,9 @@ public class FieldFiller {
         this.values = values;
     }
 
-    public static List<UIField> fill(List<Field> fields) {
+    public static List<UIStringField> fill(List<Field> fields) {
         return fields.stream().map(f -> {
-            UIField uif = new UIField();
+            UIStringField uif = new UIStringField();
 
 
         })
