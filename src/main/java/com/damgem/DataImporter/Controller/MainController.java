@@ -23,6 +23,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -41,6 +43,8 @@ public class MainController implements Initializable {
     public Button buttonConfirm;
     public Label targetLabel;
     public Label subTargetLabel;
+    public AnchorPane anchor;
+    public ColumnConstraints keyColumn;
 
     private List<Field> fields;
     private final Property<Boolean> disabled = new SimpleBooleanProperty(false);
@@ -146,6 +150,12 @@ public class MainController implements Initializable {
 
         // Show stage
         stage.showAndWait();
+    }
+
+    public void setDimensions(Integer width, Integer height, Integer keyColumnWidth) {
+        if(width != null) this.anchor.setPrefWidth(width);
+        if(height != null) this.anchor.setPrefHeight(height);
+        if(keyColumnWidth != null) this.keyColumn.setPrefWidth(keyColumnWidth);
     }
 
     private class FieldName extends Label {

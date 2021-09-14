@@ -1,6 +1,9 @@
 {
   "legacyMode": false,
   "legacyProfile": "WS",
+  "windowWidth" : 680,
+  "windowHeight" : 960,
+  "keyColumnWidth": 150,
   "profiles": {
     "WS": {
       "target": "data/teilnehmer.xls",

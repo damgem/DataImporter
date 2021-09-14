@@ -97,6 +97,7 @@ public class Main extends Application {
 
         // Init Main Controller
         MainController controller = loader.getController();
+        controller.setDimensions(configurationData.windowWidth, configurationData.windowHeight, configurationData.keyColumnWidth);
         controller.setFields(new FieldMatcher(profile.mapping).match(parameterData.values));
         controller.setTarget(Objects.requireNonNullElse(profile.target, ""),
                              Objects.requireNonNullElse(profile.subTarget, ""));

@@ -14,7 +14,8 @@
             prefWidth="600.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.damgem.DataImporter.Controller.MainController">
+            fx:controller="com.damgem.DataImporter.Controller.MainController"
+            fx:id="anchor">
     <VBox AnchorPane.rightAnchor="0"
           AnchorPane.leftAnchor="0"
           AnchorPane.topAnchor="0"
@@ -29,7 +30,7 @@
             </padding>
             <GridPane fx:id="grid" hgap="16" vgap="4">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="RIGHT"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" halignment="RIGHT" fx:id="keyColumn"/>
                     <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="150.0"/>
                 </columnConstraints>
                 <padding>
