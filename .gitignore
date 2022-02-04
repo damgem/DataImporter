@@ -1,5 +1,5 @@
 # Custom
-extern/data/*
+data/*
 gradlew
 gradlew.bat
 

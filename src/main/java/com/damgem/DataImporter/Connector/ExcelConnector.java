@@ -1,7 +1,7 @@
 package com.damgem.DataImporter.Connector;
 
 import com.damgem.DataImporter.DataImporterError;
-import com.damgem.DataImporter.Field.Field;
+import com.damgem.DataImporter.Field.NamedValue;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class ExcelConnector implements DataConnector {
 
-    private String target, subTarget;
+    private final String target, subTarget;
 
     private String cellToString(Cell cell) {
         return switch (cell.getCellType()) {
@@ -55,7 +55,7 @@ public class ExcelConnector implements DataConnector {
         }
     }
 
-    private Sheet openSheet(Workbook workbook) throws DataImporterError {
+    private Sheet openSheet(Workbook workbook) {
         if(this.subTarget != null && !this.subTarget.isEmpty()) {
             Sheet sheet = workbook.getSheet(subTarget);
             return (sheet == null) ? workbook.createSheet(subTarget) : sheet;
@@ -75,7 +75,7 @@ public class ExcelConnector implements DataConnector {
     }
 
     @Override
-    public void write(String target, String subTarget, List<Field> data) throws DataImporterError {
+    public void write(String target, String subTarget, List<NamedValue> data) throws DataImporterError {
 
         Workbook workbook = this.openWorkbook();
         Sheet sheet = this.openSheet(workbook);
@@ -93,7 +93,7 @@ public class ExcelConnector implements DataConnector {
         }
 
         // insert data
-        List<String> dataFieldValues = data.stream().map(kv -> kv.value.getValue()).collect(Collectors.toList());
+        List<String> dataFieldValues = data.stream().map(kv -> kv.value).collect(Collectors.toList());
         this.addRowToSheet(sheet, dataFieldValues);
 
         // write to file

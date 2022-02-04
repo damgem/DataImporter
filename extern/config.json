@@ -1,40 +1,40 @@
 {
   "legacyMode": false,
   "legacyProfile": "WS",
-  "windowWidth" : 680,
-  "windowHeight" : 960,
+  "windowWidth": 680,
+  "windowHeight": 960,
   "keyColumnWidth": 150,
   "profiles": {
     "WS": {
       "target": "data/teilnehmer.xls",
       "mapping": {
-        "Kundennummer":  null,
-        "Name":  1,
-        "Vorname":  2,
-        "Anrede":  3,
-        "Geburtsdatum":  4,
+        "Kundennummer": null,
+        "Name": 1,
+        "Vorname": 2,
+        "Anrede": 3,
+        "Geburtsdatum": 4,
         "Strasse": 5,
         "Hausnummer": 6,
-        "PLZ":  7,
-        "Ort":  8,
-        "Telefon1":  null,
-        "Telefon2":  null,
-        "Fax":  null,
-        "eMail":  null,
-        "Mobil":  9,
-        "UserName":  null,
-        "Passwort":  null,
-        "CH1":  10,
-        "CH2":  null,
-        "CH3":  null,
-        "CH4":  null,
-        "CH5":  null,
-        "CH6":  null,
-        "eMail-Privat":  11,
-        "Versand zugestimmt":  12,
-        "Aufmerksam über":  13,
-        "Vorname Erziehungsb.":  14,
-        "Nachname Erziehungsb.":  15
+        "PLZ": 7,
+        "Ort": 8,
+        "Telefon1": null,
+        "Telefon2": null,
+        "Fax": null,
+        "eMail": null,
+        "Mobil": 9,
+        "UserName": null,
+        "Passwort": null,
+        "CH1": 10,
+        "CH2": null,
+        "CH3": null,
+        "CH4": null,
+        "CH5": null,
+        "CH6": null,
+        "eMail-Privat": 11,
+        "Versand zugestimmt": 12,
+        "Aufmerksam über": 13,
+        "Vorname Erziehungsb.": 14,
+        "Nachname Erziehungsb.": 15
       }
     },
     "FB": {
@@ -44,13 +44,17 @@
         "ID1": null,
         "WorkshopID": {
           "sourceColumnIndex": 1,
-          "isRequired": true
+          "isRequired": true,
+          "valueMapName": "numeric-map"
         },
         "Geschlecht": null,
         "Alter": 2,
         "Freiwilligkeit": 3,
         "Gefallen": 4,
-        "Stimmung": 5,
+        "Stimmung": {
+          "sourceColumnIndex": 5,
+          "valueMapName": "schlecht-gut"
+        },
         "Arbeitstempo": 6,
         "Inhalte_ausprobieren": 7,
         "Inhalte_mehr_wissen": 8,
@@ -81,6 +85,15 @@
         "Bemerkung": 9,
         "Ich bin erstmals auf die Angebote der Stiftung aufmerksam geworden": 10
       }
+    }
+  },
+  "valueMaps": {
+    "schlecht-gut": {
+      "sehr schlecht": "1",
+      "schlecht": "2",
+      "neutral": "3",
+      "gut": "4",
+      "sehr gut": "5"
     }
   }
 }

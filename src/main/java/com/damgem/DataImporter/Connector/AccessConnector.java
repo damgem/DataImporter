@@ -1,7 +1,7 @@
 package com.damgem.DataImporter.Connector;
 
 import com.damgem.DataImporter.DataImporterError;
-import com.damgem.DataImporter.Field.Field;
+import com.damgem.DataImporter.Field.NamedValue;
 import com.healthmarketscience.jackcess.*;
 
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class AccessConnector implements DataConnector {
 
-    private String target, subTarget;
+    private final String target, subTarget;
 
     public AccessConnector(String target, String subTarget) throws DataImporterError {
         if(target == null) {
@@ -50,7 +50,7 @@ public class AccessConnector implements DataConnector {
     }
 
     @Override
-    public void write(String target, String subTarget, List<Field> data) throws DataImporterError {
+    public void write(String target, String subTarget, List<NamedValue> data) throws DataImporterError {
 
         Table table = this.openTable();
 
@@ -66,10 +66,10 @@ public class AccessConnector implements DataConnector {
 
         // make sure there are no empty numerical values
         data.forEach(f -> {
-            if(table.getColumn(f.name).getType() == DataType.LONG && f.value.isEmpty().get()) {
+            if(table.getColumn(f.name).getType() == DataType.LONG && f.value.isEmpty()) {
                 map.put(f.name, 0);
             } else {
-                map.put(f.name, f.value.getValue());
+                map.put(f.name, f.value);
             }
         });
 

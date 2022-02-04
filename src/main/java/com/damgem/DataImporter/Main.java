@@ -6,9 +6,6 @@ import com.damgem.DataImporter.Data.ConfigurationData;
 import com.damgem.DataImporter.Data.ParameterData;
 import com.damgem.DataImporter.Data.Profile;
 import com.damgem.DataImporter.Field.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,11 +14,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.Objects;
 
 public class Main extends Application {
@@ -47,45 +39,35 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private ConfigurationData getConfiguration(Path path) throws DataImporterError {
-        // Create gson parser
-        Type FieldBlueprintList = new TypeToken<List<FieldBlueprint>>() {}.getType();
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(FieldBlueprint.class, new FieldBlueprintDeserializer())
-                .registerTypeAdapter(FieldBlueprintList, new FieldBlueprintListDeserializer())
-                .create();
-
-        // Parse Json / Load Profiles
-        String jsonString;
-        try { jsonString = Files.readString(path); }
-        catch (Exception error) {
-            throw new DataImporterError("Fehlende Datei", "Die Datei " + path.toAbsolutePath() +
-                    " kann nicht gelesen oder gefunden werden.");
-        }
-        return gson.fromJson(jsonString, ConfigurationData.class);
-    }
-
-    private ParameterData getParameter() throws DataImporterError {
-        return new ParameterData(this.getParameters().getNamed());
-    }
-
     @Override
     public void start(Stage primaryStage) {
-        try { start_unsafe(primaryStage); }
+        try {
+            initialize_config();
+            start_unsafe(primaryStage);
+        }
         catch (DataImporterError error) { this.showErrorWindow(primaryStage, error.errorTitle, error.errorDescription); }
         catch (RuntimeException error) {
            this.showErrorWindow(primaryStage, "Interner Fehler", error.getMessage());
         }
     }
 
-    private void start_unsafe(Stage primaryStage) throws DataImporterError {
+    private void initialize_config() throws DataImporterError
+    {
+        // Initialize Parameter data
+        ParameterData.initialize(this.getParameters().getNamed());
 
-        // Read parameter and configuration data
-        ParameterData parameterData = this.getParameter();
-        ConfigurationData configurationData = this.getConfiguration(Paths.get("config.json"));
+        // Initialize Configuration data
+        ParameterData parameterData = ParameterData.getInstance();
+        String configFilePath = Objects.requireNonNullElse(parameterData.configFile, "config.json");
+        ConfigurationData.initializeFromFile(configFilePath);
+    }
 
-        // Retrieve profile data
-        Profile profile = Profile.fromConfigurationData(configurationData, parameterData);
+    private void start_unsafe(Stage primaryStage) throws DataImporterError
+    {
+        // Get configuration
+        ConfigurationData configurationData = ConfigurationData.getInstance();
+        ParameterData parameterData = ParameterData.getInstance();
+        Profile profile = Profile.getActiveProfile();
 
         // Load Main Scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
@@ -95,12 +77,21 @@ public class Main extends Application {
             throw new DataImporterError("Internal Error", "Cannot load Main.fxml: " + error.getMessage());
         }
 
-        // Init Main Controller
+        // Initialize main controller
         MainController controller = loader.getController();
-        controller.setDimensions(configurationData.windowWidth, configurationData.windowHeight, configurationData.keyColumnWidth);
-        controller.setFields(new FieldMatcher(profile.mapping).match(parameterData.values));
-        controller.setTarget(Objects.requireNonNullElse(profile.target, ""),
-                             Objects.requireNonNullElse(profile.subTarget, ""));
+
+        controller.setFields(new FieldListFactory(profile.mapping).create());
+
+        controller.setTarget(
+                Objects.requireNonNullElse(profile.target, ""),
+                Objects.requireNonNullElse(profile.subTarget, "")
+        );
+
+        controller.setDimensions(
+                configurationData.windowWidth,
+                configurationData.windowHeight,
+                configurationData.keyColumnWidth
+        );
 
         // Prepare primary stage
         primaryStage.setTitle("DataImporter");

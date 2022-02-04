@@ -5,6 +5,7 @@ import com.damgem.DataImporter.Connector.DataConnector;
 import com.damgem.DataImporter.Connector.ExcelConnector;
 import com.damgem.DataImporter.DataImporterError;
 import com.damgem.DataImporter.Field.Field;
+import com.damgem.DataImporter.Field.NamedValue;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -35,6 +36,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
     // FXML Stuff
@@ -62,6 +64,7 @@ public class MainController implements Initializable {
             this.grid.add(new FieldName(f), 0, fi);
             FieldValue fv = new FieldValue(f, fi);
             this.grid.add(fv, 1, fi);
+
             if(!customSelection && f.value.getValue().isEmpty()){
                 customSelection = true;
                 fv.requestFocus();
@@ -104,25 +107,35 @@ public class MainController implements Initializable {
         this.disabled.setValue(true);
 
         boolean successful = false;
-        try {
-            dataConnector.write(this.target, this.subTarget, this.fields);
+        try
+        {
+            // extract namedValues from fields
+            List<NamedValue> namedValues = new ArrayList<>(fields.size());
+            for (Field field : fields)
+                namedValues.add(field.extractData());
+
+            // write data
+            dataConnector.write(target, subTarget, namedValues);
+
+            // mark operation as successful
             successful = true;
-        } catch (DataImporterError error) {
-            this.errorDialog(error.errorTitle, error.errorDescription);
+        }
+        catch (DataImporterError error) {
+            errorDialog(error.errorTitle, error.errorDescription);
         } catch (Throwable error) {
-            this.errorDialog("Internal Error", error.getMessage());
+            errorDialog("Internal Error", error.getMessage());
         }
 
         if(!successful) {
             PauseTransition pause = new PauseTransition(Duration.millis(250));
-            pause.setOnFinished(event -> this.disabled.setValue(false));
+            pause.setOnFinished(event -> disabled.setValue(false));
             pause.play();
         } else {
             ColorInput effect = new ColorInput(0, 0, 1000, 1000, Color.rgb(0,0,0, 0));
             Timeline fade = new Timeline(
                     new KeyFrame(Duration.millis(100), new KeyValue(effect.paintProperty(), Paint.valueOf("green")))
             );
-            this.grid.getScene().getRoot().setEffect(effect);
+            grid.getScene().getRoot().setEffect(effect);
             fade.setOnFinished(e -> this.closeWindow());
             fade.play();
         }
@@ -160,10 +173,10 @@ public class MainController implements Initializable {
 
     private class FieldName extends Label {
         FieldName(Field field) {
-            super(field.name);
-            if(field.isRequired) this.setStyle("-fx-font-weight: bold");
+            super(field.blueprint.name);
+            if(field.blueprint.isRequired) this.setStyle("-fx-font-weight: bold");
             this.disableProperty().bind(disabled);
-            this.setTooltip(new Tooltip(field.name));
+            this.setTooltip(new Tooltip(field.blueprint.name));
         }
     }
 
