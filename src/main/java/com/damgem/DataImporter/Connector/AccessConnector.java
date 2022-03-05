@@ -57,9 +57,21 @@ public class AccessConnector implements DataConnector {
         List<String> accessColumnNames = table.getColumns().stream().map(Column::getName).collect(Collectors.toList());
         List<String> dataColumnNames = data.stream().map(f -> f.name).collect(Collectors.toList());
 
-        if(!accessColumnNames.equals(dataColumnNames)) {
-            throw new DataImporterError("Namensfehler", "Spaltennamen der Datenbank-Tabelle " +
-                    "stimmen nicht mit den in der Konfiguration spezifierten Feldnamen überein.");
+        // assure that accessColumnNames is equal to dataColumnNames
+        if(accessColumnNames.size() != dataColumnNames.size())
+        {
+            throw new DataImporterError("Namensfehler", "Die Anzahl der Spalten in der " +
+                    "Datenbank-Tabelle (" + accessColumnNames.size() + ") ist nicht gleich der Anzahl der " +
+                    "konfigurierten Anzahl von Feldnamen (" + dataColumnNames.size() + ").");
+        }
+        for(int i = 0; i < accessColumnNames.size(); i++)
+        {
+            if(! accessColumnNames.get(i).equals(dataColumnNames.get(i)))
+            {
+                throw new DataImporterError("Namensfehler", "Der " + i+1 + ". Spaltenname (" +
+                        accessColumnNames.get(i) + ") der Datenbank-Tabelle stimmt nicht mit dem " + i+1 +
+                        ". konfiguriertem Feldnamen (" + dataColumnNames.get(i) + ") überein.");
+            }
         }
 
         Map<String, Object> map = new HashMap<>();
